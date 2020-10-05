@@ -27,9 +27,7 @@ if False:
     # For type annotation
     from typing import Type  # for python3.5.1
 
-
 logger = logging.getLogger(__name__)
-
 
 # common option names for autodoc directives
 AUTODOC_DEFAULT_OPTIONS = ['members', 'undoc-members', 'inherited-members',
@@ -84,7 +82,12 @@ def process_documenter_options(documenter: "Type[Documenter]", config: Config, o
         else:
             negated = options.pop('no-' + name, True) is None
             if name in config.autodoc_default_options and not negated:
-                options[name] = config.autodoc_default_options[name]
+                if name == 'exclude-members':
+                    if config.autodoc_default_options[name]:
+                        options[name] = config.autodoc_default_options[name] \
+                            + options.get(name, "")
+                else:
+                    options[name] = config.autodoc_default_options[name]
 
     return Options(assemble_option_dict(options.items(), documenter.option_spec))
 

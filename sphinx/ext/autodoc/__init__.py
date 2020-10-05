@@ -1516,7 +1516,7 @@ class ClassDocumenter(DocstringSignatureMixin, ModuleLevelDocumenter):  # type: 
 
         # for classes, what the "docstring" is can be controlled via a
         # config value; the default is only the class docstring
-        if content in ('both', 'init'):
+        if content in ('both', 'init', 'class-priority', 'init-priority'):
             __init__ = self.get_attr(self.object, '__init__', None)
             initdocstring = getdoc(__init__, self.get_attr,
                                    self.env.config.autodoc_inherit_docstrings,
@@ -1540,6 +1540,12 @@ class ClassDocumenter(DocstringSignatureMixin, ModuleLevelDocumenter):  # type: 
             if initdocstring:
                 if content == 'init':
                     docstrings = [initdocstring]
+                if content == 'init-priority':
+                    if initdocstring:
+                        docstrings = [initdocstring]
+                if content == 'class-priority':
+                    if not docstrings:
+                        docstrings = [initdocstring]
                 else:
                     docstrings.append(initdocstring)
 
